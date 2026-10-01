@@ -28,6 +28,12 @@ Every tool in the Microservices Lab, in plain words: what it is, what it is used
 - **Used for:** Creating repos, pull requests and releases, and calling the GitHub API from a terminal.
 - **In this project (M0):** Creates the repo, opens and merges pull requests, and publishes milestone releases.
 
+### winget
+
+- **What it is:** The package manager built into Windows, run from a terminal.
+- **Used for:** Installing and upgrading desktop and command-line tools with one command.
+- **In this project (M0):** Installs most of the toolchain: the .NET SDK, kubectl, kind, Helm, Task, Buf, grpcurl and k9s. The [toolchain runbook](../runbooks/toolchain-setup.md) lists the package ids.
+
 ### Node.js
 
 - **What it is:** A runtime that runs JavaScript outside the browser.
@@ -56,7 +62,13 @@ Every tool in the Microservices Lab, in plain words: what it is, what it is used
 
 - **What it is:** A task runner, like `make`, configured in `Taskfile.yml`.
 - **Used for:** Giving common commands short names that work the same on every operating system.
-- **In this project (M0):** The front door: `task setup`, `task doctor`, `task test`, `task docs:dev`, `task verify`, and from M1 `task up`.
+- **In this project (M0):** The front door: `task setup`, `task test`, `task docs:lint`, `task docs:dev`, `task verify`; from M1 also `task doctor` and `task up`.
+
+### EditorConfig
+
+- **What it is:** A small settings file, `.editorconfig`, that most code editors read.
+- **Used for:** Making every editor use the same character set, line endings and indentation in a project.
+- **In this project (M0):** Sets UTF-8, LF line endings and 2-space indents for all files, 4 spaces for C#, and CRLF for Windows scripts.
 
 ### .NET SDK
 
@@ -473,6 +485,24 @@ Every tool in the Microservices Lab, in plain words: what it is, what it is used
 - **What it is:** GitHub's free hosting for static websites.
 - **Used for:** Publishing docs and project sites straight from a repository.
 - **In this project (M0):** Hosts this docs site. The `pages` workflow publishes every docs change on `main` with GitHub's `configure-pages`, `upload-pages-artifact` and `deploy-pages` actions.
+
+### React
+
+- **What it is:** A JavaScript library for building user interfaces out of components.
+- **Used for:** Most modern web front ends.
+- **In this project (M0):** Docusaurus is built on React and renders this site with it. We write Markdown, not React code.
+
+### Docusaurus Faster (Rspack, SWC, Lightning CSS)
+
+- **What it is:** Docusaurus's optional fast build pipeline, made of three tools written in Rust: Rspack (a webpack-compatible bundler), SWC (a JavaScript and HTML compiler and minifier) and Lightning CSS (a CSS minifier).
+- **Used for:** Building large documentation sites much faster than the JavaScript-only toolchain.
+- **In this project (M0):** Builds this site with Rspack and Lightning CSS. The SWC steps are switched off because SWC refuses to run inside a folder that other accounts may change, as `C:\` allows on the dev machine; the [toolchain runbook](../runbooks/toolchain-setup.md) explains the fix.
+
+### MDX, Prism and clsx
+
+- **What it is:** Three small libraries Docusaurus relies on: MDX (Markdown that can embed React components), Prism (code highlighting, through `prism-react-renderer`) and clsx (joins CSS class names).
+- **Used for:** Interactive Markdown pages, coloured code blocks and tidy styling code.
+- **In this project (M0):** Dependencies of the docs site. Prism colours the code blocks, including C#, Protobuf and PowerShell; our pages are plain Markdown, so MDX is installed but not used directly.
 
 ### Mermaid
 

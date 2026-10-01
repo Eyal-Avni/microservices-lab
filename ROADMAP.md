@@ -32,9 +32,9 @@ Definition of Done:
 
 - [x] Toolchain installed and verified (stage 1)
 - [x] Public GitHub repo with secret scanning, push protection and squash-only merges
-- [ ] CLAUDE.md, ROADMAP.md, README.md and LICENSE
-- [ ] Docs skeleton: start page, templates, architecture pages, fundamentals index, glossary, toolchain runbook
-- [ ] ADRs 0001–0012
+- [x] CLAUDE.md, ROADMAP.md, README.md and LICENSE
+- [x] Docs skeleton: start page, templates, architecture pages, fundamentals index, glossary, toolchain runbook
+- [x] ADRs 0001–0012
 - [ ] Docs-freshness layers 1–3: Claude hook, git commit-msg hook, CI docs-drift
 - [ ] SessionStart hook shows the current milestone in a new session
 - [ ] Skills `roadmap`, `adr`, `update-docs`, `stack-check` and agent `docs-auditor`
@@ -50,3 +50,4 @@ Temporal orchestration (37) · Debezium CDC (38) · event sourcing (39) · Backs
 
 - 2026-10-01 — Design spec approved; M0 started.
 - 2026-10-01 — Toolchain installed and verified; public repo published.
+- 2026-10-01 — CLAUDE.md, README, LICENSE, the docs skeleton and ADRs 0001–0012 written; hooks, skills, the docs site and CI built (M0 PR).

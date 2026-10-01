@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft, awaiting the learner's review |
+| **Status** | Approved by the learner on 2026-10-01 |
 | **Design session** | 2026-09-30 (brainstorming with Claude Code; decisions made by the learner) |
 | **Repository** | `C:\microservices-lab`, published as the public GitHub repo `microservices-lab` in M0 |
 | **Scope** | Whole-system architecture, stack, process and roadmap. Each milestone gets its own detailed spec (`docs/superpowers/specs/`) and implementation plan (`docs/superpowers/plans/`). |

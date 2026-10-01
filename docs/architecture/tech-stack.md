@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Tech stack
 
-What each tool *is* and *does* is explained in plain words on [Tools explained](tools-explained.md). This page tracks versions and licenses. Every version below was verified against the project's releases on **2026-09-30**, and the M0 tooling rows (repo tooling, CI and Pages actions, docs) on **2026-10-01**. The `stack-check` skill re-verifies a milestone's components before the milestone starts and updates this page. Changing a choice needs an ADR.
+What each tool *is* and *does* is explained in plain words on [Tools explained](tools-explained.md). This page tracks versions and licenses. Every version below was verified against the project's releases on **2026-09-30**, and the M0 tooling rows (repo tooling, CI and Pages actions, docs site, docs checks) on **2026-10-01**. The `stack-check` skill re-verifies a milestone's components before the milestone starts and updates this page. Changing a choice needs an ADR.
 
 | Area | Choice | Version (verified) | License | Arrives in |
 |---|---|---|---|---|
@@ -34,7 +34,8 @@ What each tool *is* and *does* is explained in plain words on [Tools explained](
 | CI / registry / docs hosting | GitHub Actions / GHCR / GitHub Pages | service | — | M0 / M1 / M0 |
 | CI actions (pinned by commit SHA) | actions/checkout / actions/setup-node / pnpm/action-setup / dorny/paths-filter | 7.0.1 / 7.0.0 / 6.1.0 / 4.0.3 | MIT | M0 |
 | Pages actions (pinned by commit SHA) | actions/configure-pages / actions/upload-pages-artifact / actions/deploy-pages | 6.0.0 / 5.0.0 / 5.0.1 | MIT | M0 |
-| Docs | Docusaurus / markdownlint-cli2 / lychee (lychee-action) | 3.10.2 / 0.23.3 / action 2.9.0 | MIT / MIT / Apache-2.0 | M0 |
+| Docs site | Docusaurus (React, Mermaid; MDX, Prism and clsx) / Docusaurus Faster (Rspack, Lightning CSS) | 3.10.2 (React 19.3.0, Mermaid 12.0.0) / Rspack 1.7.12, Lightning CSS 1.33.0 | MIT / MIT, MPL-2.0 | M0 |
+| Docs checks | markdownlint-cli2 / lychee (lychee-action) | 0.23.3 / action 2.9.0 | MIT / Apache-2.0 | M0 |
 
 ## Licensing notes
 
