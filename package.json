@@ -1,0 +1,12 @@
+{
+  "name": "microservices-lab",
+  "private": true,
+  "description": "Educational microservices lab: tooling root for the docs site and docs lint",
+  "packageManager": "pnpm@12.8.1",
+  "engines": {
+    "node": ">=24.2"
+  },
+  "devDependencies": {
+    "markdownlint-cli2": "0.23.3"
+  }
+}

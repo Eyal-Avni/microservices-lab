@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft, awaiting the learner's review |
+| **Status** | Approved by the learner on 2026-10-01 |
 | **Design session** | 2026-09-30 (brainstorming with Claude Code; decisions made by the learner) |
 | **Repository** | `C:\microservices-lab`, published as the public GitHub repo `microservices-lab` in M0 |
 | **Scope** | Whole-system architecture, stack, process and roadmap. Each milestone gets its own detailed spec (`docs/superpowers/specs/`) and implementation plan (`docs/superpowers/plans/`). |
@@ -922,7 +922,7 @@ Tooling is created **when first needed**. Skills are written with `superpowers:w
   1. Reads the hook JSON from stdin and detects `git commit`, including `git -C <path> commit`.
   2. Lists staged files and classifies them (§12.6).
   3. On `main`, returns `permissionDecision: "deny"` with suggested docs. On other branches it allows, adding `additionalContext` as a reminder.
-- **`session-context.mjs`:** at SessionStart, parses the first line of `ROADMAP.md` (`**Current milestone:** …`) and that milestone's open DoD items and latest spec/plan. It injects a summary of 1 KB or less.
+- **`session-context.mjs`:** at SessionStart, parses the current-milestone line of `ROADMAP.md` (the line after its title) (`**Current milestone:** …`) and that milestone's open DoD items and latest spec/plan. It injects a summary of 1 KB or less.
 - **`.claude/settings.json`:**
   - `"outputStyle": "Explanatory"`;
   - deny rules for reading `.env*`, `git push --force` and `git commit --no-verify`;
@@ -938,7 +938,7 @@ Tooling is created **when first needed**. Skills are written with `superpowers:w
 ## 14. Roadmap ("plan of plans")
 
 `ROADMAP.md` (created in M0) holds this table. Each row adds a status (planned, in-progress, done or deferred) and
-links to its spec, plan and tag. Its first line is machine-readable:
+links to its spec, plan and tag. The line after its title is machine-readable:
 
 ```text
 **Current milestone:** M0 — Foundation · in-progress

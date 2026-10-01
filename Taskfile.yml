@@ -1,0 +1,48 @@
+# Task runner: https://taskfile.dev. Commands run in Task's built-in POSIX shell, so they also work on Windows.
+version: '3'
+
+tasks:
+  default:
+    desc: List the available tasks
+    silent: true
+    cmds:
+      - task --list
+
+  setup:
+    desc: One-time setup of a fresh clone (git hooks path, line endings, dependencies)
+    cmds:
+      - git config core.hooksPath .githooks
+      - git config core.autocrlf false
+      - pnpm install
+
+  test:
+    desc: Run the automated tests (tooling scripts and Claude Code hooks)
+    cmds:
+      - node --test "scripts/**/*.test.mjs" ".claude/hooks/*.test.mjs"
+
+  docs:lint:
+    desc: markdownlint over the repo's Markdown files
+    cmds:
+      - pnpm exec markdownlint-cli2
+
+  docs:dev:
+    desc: Run the docs site with live reload (http://localhost:3000/microservices-lab/)
+    cmds:
+      - pnpm --filter website start
+
+  docs:build:
+    desc: Production build of the docs site (fails on broken links)
+    cmds:
+      - pnpm --filter website build
+
+  verify:
+    desc: Prove the current milestone
+    cmds:
+      - task: verify:m0
+
+  verify:m0:
+    desc: "M0 proof: tests, docs lint and site build"
+    cmds:
+      - task: test
+      - task: docs:lint
+      - task: docs:build

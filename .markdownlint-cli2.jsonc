@@ -1,0 +1,23 @@
+// markdownlint-cli2 configuration (https://github.com/DavidAnson/markdownlint-cli2)
+{
+  "config": {
+    "default": true,
+    "MD013": false, // line length: prose paragraphs and tables are long
+    "MD033": false, // inline HTML (<br/> in tables, HTML comments in templates)
+    "MD034": false, // bare URLs in source lists
+    "MD036": false, // bold lines used as small labels
+    "MD041": false, // files may start with front matter or a non-H1 heading (PR template, agents)
+    "MD060": false, // table column alignment style
+    "MD024": { "siblings_only": true }
+  },
+  "globs": ["**/*.md"],
+  "ignores": [
+    "**/node_modules/**",
+    ".worktrees/**",
+    ".superpowers/**",
+    "website/build/**",
+    "website/.docusaurus/**",
+    "learning-pack/**",
+    "docs/superpowers/**"
+  ]
+}
