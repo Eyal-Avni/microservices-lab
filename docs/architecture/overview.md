@@ -16,7 +16,7 @@ The Microservices Lab is a toy commerce system split into seven small services: 
 ## The big picture
 
 ```mermaid
-flowchart LR
+flowchart TB
   user(["Learner<br/>browser · curl · grpcurl · k6"])
   subgraph edge["Edge"]
     gw["Envoy Gateway<br/>(Gateway API)"]

@@ -1,3 +1,6 @@
 # pnpm workspace. M0 has only the docs site; later milestones add libs/node/* and the Node services.
 packages:
   - website
+allowBuilds:
+  '@swc/core': false
+  core-js: false

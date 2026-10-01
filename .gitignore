@@ -44,3 +44,6 @@ crash.log
 
 # Generated Gemini Notebook learning pack (published as a GitHub Release asset)
 learning-pack/
+
+# Playwright MCP snapshots and screenshots (browser checks of the docs site and UIs)
+.playwright-mcp/
