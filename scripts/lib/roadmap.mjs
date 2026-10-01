@@ -44,7 +44,7 @@ export function parseRoadmap(text) {
 
 export function openDodItems(text, id) {
   const lines = text.split(/\r?\n/);
-  const heading = new RegExp(`^## ${id}(?!\d)`);
+  const heading = new RegExp(`^## ${id}(?!\\d)`);
   const start = lines.findIndex((l) => heading.test(l));
   if (start === -1) return [];
   const items = [];

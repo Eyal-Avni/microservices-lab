@@ -60,6 +60,13 @@ test('openDodItems returns unchecked items of one section only (M1 is not M10)',
   assert.deepEqual(openDodItems(FIXTURE, 'M2'), []);
 });
 
+test('openDodItems never takes the M10 section for M1, whatever the order', () => {
+  const m10First = ['## M10 — Delivery', '', '- [ ] Belongs to M10', '', '## M1 — Skeleton', '', '- [ ] Belongs to M1', ''].join('\n');
+  assert.deepEqual(openDodItems(m10First, 'M1'), ['Belongs to M1']);
+  assert.deepEqual(openDodItems(m10First, 'M10'), ['Belongs to M10']);
+  assert.deepEqual(openDodItems('## M10 — Delivery\n\n- [ ] Belongs to M10\n', 'M1'), []);
+});
+
 test('sessionSummary names the milestone, links, open items and the next milestone', () => {
   const s = sessionSummary(FIXTURE);
   assert.match(s, /current milestone M1 Walking skeleton \(in-progress\)/);
