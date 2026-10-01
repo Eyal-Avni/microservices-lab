@@ -693,7 +693,7 @@ Figures are steady-state estimates, in GB.
 | Command | Purpose |
 |---|---|
 | `task setup` | Tool install hints |
-| `task doctor` | Environment checks (§17); fails only on tools the current milestone needs |
+| `task doctor` (from M1) | Environment checks (§17); fails only on tools the current milestone needs |
 | `task up [PROFILE=core\|full]` | Cluster, caches, platform and services (`tilt ci`) |
 | `task dev` | `tilt up`, the live inner loop with the dashboard |
 | `task down` / `task reset` / `task status` | Lifecycle |
@@ -795,6 +795,7 @@ CLAUDE.md  ROADMAP.md  README.md  Taskfile.yml  Tiltfile  lab.slnx  global.json 
 - Images are always multi-arch, and contracts are always proto3.
 - Every service implements §5.3.
 - Every Mermaid diagram is followed by a prose "Diagram description".
+- Every tool in the stack has a plain-language entry in `docs/architecture/tools-explained.md`: what it is, what it is used for in general, what it does in this project, and the milestone it arrives in. Adding, replacing or removing a tool updates that page in the same change. (Added 2026-10-01 at the learner's request.)
 - Tooling scripts are dependency-free Node `.mjs`.
 
 **Licensing hygiene:** prefer OSI-licensed components. Record each component's license in `docs/architecture/tech-stack.md`, and flag any source-available choice (BSL, SSPL, AGPL) in an ADR.
@@ -828,7 +829,7 @@ Every milestone runs the same loop.
 
 | Path | Contents |
 |---|---|
-| `docs/architecture/` | Overview (C4 context and containers), flows, `tech-stack.md` (versions, licenses, rationale), environments, `dev-workflow.md` (superpowers loop, Claude skills/agents/hooks, CI). `dev-workflow.md` is the page that `.claude/` and `.github/` changes must update. |
+| `docs/architecture/` | Overview (C4 context and containers), flows, `tools-explained.md` (every tool in plain words: what it is, what it's used for, what it does here), `tech-stack.md` (versions, licenses, rationale), environments, `dev-workflow.md` (superpowers loop, Claude skills/agents/hooks, CI). `dev-workflow.md` is the page that `.claude/` and `.github/` changes must update. |
 | `docs/adr/` | MADR 4 decision records and an index |
 | `docs/fundamentals/` | 36 concept pages plus `index.md` (number, name, status, milestone, links) |
 | `docs/labs/` | Hands-on experiments |
@@ -945,9 +946,9 @@ links to its spec, plan and tag. Its first line is machine-readable:
 
 | M | Goal | Fundamentals | Key deliverables | Proof (`task verify:mN`) | Size |
 |---|---|---|---|---|---|
-| 0 | Foundation | 13 (CI skeleton) | Toolchain installed (winget, with the learner's approval), CLAUDE.md, ROADMAP, docs skeleton and templates (including `dev-workflow.md`, `tech-stack.md` and the 36-row fundamentals index), ADRs 0001–0012, Docusaurus + Pages, `docs-drift` + hooks + M0 skills and agent, Taskfile (`setup`, `doctor`, `docs:*`, `test`, `verify`), CI (`changes`, `docs`, `scripts`, `ci-ok`, `pages`, `links`), public GitHub repo with secret scanning and push protection | `task doctor` green; hook denies on `main` and reminds on a branch; `ci-ok` green; Pages live; new session shows the milestone | S |
-| 1 | Walking skeleton | 1, 2, 3, 6, 7, 10, 11, 13, 24, 35 | Buf contracts; `Lab.ServiceDefaults`; catalog (.NET) with seeded products; Node platform lib; bff-web (NestJS) over gRPC; Dockerfiles (multi-arch); kind + registry caches; Envoy Gateway + routes; Kustomize base/overlays; Tilt + Taskfile; CI with native multi-arch builds to GHCR and e2e smoke on kind; M1 tooling | `curl http://api.localtest.me/api/v1/products` returns 200; `grpcurl` works through the gateway; e2e green locally and in CI; both platforms listed by `imagetools inspect` | L |
-| 2 | Observability | 12 | Collector (OTLP + filelog), Prometheus/Loki/Tempo/Grafana, dashboards, trace↔log links, learning-pack builder | The BFF→catalog trace is found in Tempo, and its logs are found in Loki by `trace_id` | M |
+| 0 | Foundation | 13 (CI skeleton) | Toolchain installed (winget, with the learner's approval), CLAUDE.md, ROADMAP, docs skeleton and templates (including `tools-explained.md`, `dev-workflow.md`, `tech-stack.md` and the 36-row fundamentals index), ADRs 0001–0012, Docusaurus + Pages, `docs-drift` + hooks + M0 skills and agent, Taskfile (`setup`, `docs:*`, `test`, `verify`), CI (`changes`, `docs`, `tooling`, `ci-ok`, `pages`, `links`), public GitHub repo with secret scanning and push protection. Trimmed on 2026-10-01: `task doctor` moves to M1 and `docs-check` to M2. | toolchain verified; `task test` green; hook denies on `main` and reminds on a branch; `ci-ok` green; Pages live; new session shows the milestone | S |
+| 1 | Walking skeleton | 1, 2, 3, 6, 7, 10, 11, 13, 24, 35 | Buf contracts; `Lab.ServiceDefaults`; catalog (.NET) with seeded products; Node platform lib; bff-web (NestJS) over gRPC; Dockerfiles (multi-arch); kind + registry caches; Envoy Gateway + routes; Kustomize base/overlays; Tilt + Taskfile; `task doctor` (toolchain, Docker memory, ports and DNS checks); CI with native multi-arch builds to GHCR and e2e smoke on kind; M1 tooling | `curl http://api.localtest.me/api/v1/products` returns 200; `grpcurl` works through the gateway; e2e green locally and in CI; both platforms listed by `imagetools inspect` | L |
+| 2 | Observability | 12 | Collector (OTLP + filelog), Prometheus/Loki/Tempo/Grafana, dashboards, trace↔log links, learning-pack builder, `docs-check` (Mermaid descriptions, fundamentals and ADR index checks; moved here from M0) | The BFF→catalog trace is found in Tempo, and its logs are found in Loki by `trace_id` | M |
 | 3 | Data ownership | 9, 22, 23, 6 | CNPG per service, migrations, HybridCache + Valkey, order-service (PlaceOrder with sync price check), gRPC LB lab, `new-service` skill | Cross-DB access is denied; cache hit/miss is visible; `round_robin` spreads load across pods | M |
 | 4 | Event backbone | 8, 16, 18, 19, 12 | Strimzi (3 KRaft nodes), Apicurio, CloudEvents helpers (.NET + Node), outbox relay, inbox, notification consumer, traces across Kafka, generated event catalog | One trace spans order → Kafka → notification; an incompatible schema is rejected; no events are lost with Kafka down during order placement | L |
 | 5 | Saga | 17, 19, 20 | payment + inventory, compensations, timeout sweeper, tombstones, retry topics + DLQ, `dlq:replay`, saga e2e | An `OOS-*` order ends CANCELLED with Released/Refunded within 10 s; killing payment mid-flight causes no double charge; a `poison` message reaches the DLQ | L |
@@ -1079,7 +1080,7 @@ links to its spec, plan and tag. Its first line is machine-readable:
 | M12 | `Sigstore.Cosign`, `Anchore.Syft`, `AquaSecurity.Trivy` |
 | M16 | `GoLang.Go` |
 
-**`task doctor` checks**
+**`task doctor` checks** (arrives in M1; M0 verified the toolchain by hand)
 - Versions: Node 24, pnpm 10, .NET SDK per `global.json`.
 - Docker VM memory is at least 18 GiB for `full`.
 - kubectl is 1.36 or newer and is not Docker Desktop's copy.
