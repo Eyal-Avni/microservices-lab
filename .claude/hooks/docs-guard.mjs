@@ -3,6 +3,7 @@
 // tool call; it stays silent unless the command is a `git commit`. On main it denies a commit that changes
 // code without docs; on other branches it allows the commit and adds a reminder for Claude.
 // It fails open (no output, exit 0) on any internal error: CI (layer 3) is the real gate.
+import { posix, win32 } from 'node:path';
 import { evaluate, suggestDocs, SKIP_MARKER } from '../../scripts/lib/docs-rules.mjs';
 import { currentBranch, stagedFiles, worktreeChanges } from '../../scripts/lib/git.mjs';
 
@@ -20,6 +21,15 @@ export function analyzeCommand(command) {
     includeWorktree: STAGES_FILES_RE.test(command),
     skip: command.includes(SKIP_MARKER),
   };
+}
+
+// `git -C <dir>` is relative to the shell's working directory (the hook input's `cwd`), not to this process's.
+// Git Bash spells C:\x as /c/x, which Node cannot use as a Windows cwd, so drive paths are translated first.
+export function resolveRepoDir(repoDir, cwd, platform = process.platform) {
+  const path = platform === 'win32' ? win32 : posix;
+  const native = (p) =>
+    platform === 'win32' ? p.replace(/^\/([a-zA-Z])(?:\/|$)/, (_, drive) => `${drive.toUpperCase()}:/`) : p;
+  return path.resolve(native(cwd ?? process.cwd()), native(repoDir ?? '.'));
 }
 
 export function buildOutput({ files, branch }) {
@@ -51,7 +61,7 @@ export function run(rawInput) {
     const input = JSON.parse(rawInput);
     const info = analyzeCommand(input?.tool_input?.command);
     if (!info || info.skip) return '';
-    const cwd = info.repoDir ?? input.cwd ?? process.cwd();
+    const cwd = resolveRepoDir(info.repoDir, input.cwd);
     const files = new Set(stagedFiles(cwd));
     if (info.includeWorktree) for (const f of worktreeChanges(cwd)) files.add(f);
     const output = buildOutput({ files: [...files], branch: currentBranch(cwd) });
