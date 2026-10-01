@@ -328,7 +328,19 @@ Every tool in the Microservices Lab, in plain words: what it is, what it is used
 
 - **What it is:** GitHub's built-in CI/CD service.
 - **Used for:** Running tests, builds and deployments on every push and pull request.
-- **In this project (M0):** Lints and builds the docs and runs the tooling tests. From M1 it also builds multi-architecture images. `ci-ok` is the one required check.
+- **In this project (M0):** Lints and builds the docs, checks that code changes come with docs changes, runs the tooling tests and deploys this site. From M1 it also builds multi-architecture images. `ci-ok` is the one required check.
+
+### Setup actions (checkout, setup-node, pnpm/action-setup)
+
+- **What it is:** Three ready-made GitHub Actions steps: `actions/checkout` downloads the repo, `actions/setup-node` installs Node.js and `pnpm/action-setup` installs pnpm.
+- **Used for:** Preparing a fresh CI machine before the real work starts, with a download cache that keeps installs fast.
+- **In this project (M0):** The first steps of every CI job. Each is pinned to a full commit SHA, so a moved version tag can't change what runs.
+
+### dorny/paths-filter
+
+- **What it is:** A GitHub Action that reports which groups of files a push or pull request changed.
+- **Used for:** Skipping CI jobs that a change can't affect.
+- **In this project (M0):** The `changes` job in `ci.yml` decides whether the docs and tooling jobs run. Filtering inside one workflow keeps the required `ci-ok` check reporting even when jobs are skipped.
 
 ### GitHub Container Registry (GHCR)
 
@@ -456,6 +468,12 @@ Every tool in the Microservices Lab, in plain words: what it is, what it is used
 - **Used for:** Turning Markdown files into a searchable docs site.
 - **In this project (M0):** Builds this site from `docs/` and publishes it to GitHub Pages.
 
+### GitHub Pages
+
+- **What it is:** GitHub's free hosting for static websites.
+- **Used for:** Publishing docs and project sites straight from a repository.
+- **In this project (M0):** Hosts this docs site. The `pages` workflow publishes every docs change on `main` with GitHub's `configure-pages`, `upload-pages-artifact` and `deploy-pages` actions.
+
 ### Mermaid
 
 - **What it is:** A text syntax for diagrams that renders inside Markdown.
@@ -472,7 +490,7 @@ Every tool in the Microservices Lab, in plain words: what it is, what it is used
 
 - **What it is:** A fast link checker.
 - **Used for:** Finding dead links in docs.
-- **In this project (M0):** A weekly CI job checks every link in the docs.
+- **In this project (M0):** The `links` workflow runs it through `lychee-action`: weekly, on demand, and on pull requests that change Markdown. It is not a required check, so one flaky outside site can't block a merge.
 
 ### Gemini Notebook (formerly NotebookLM)
 

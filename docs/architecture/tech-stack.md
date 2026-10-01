@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Tech stack
 
-What each tool *is* and *does* is explained in plain words on [Tools explained](tools-explained.md). This page tracks versions and licenses. Every version below was verified on **2026-09-30** against the project's releases. The `stack-check` skill re-verifies a milestone's components before the milestone starts and updates this page. Changing a choice needs an ADR.
+What each tool *is* and *does* is explained in plain words on [Tools explained](tools-explained.md). This page tracks versions and licenses. Every version below was verified against the project's releases on **2026-09-30**, and the M0 tooling rows (repo tooling, CI and Pages actions, docs) on **2026-10-01**. The `stack-check` skill re-verifies a milestone's components before the milestone starts and updates this page. Changing a choice needs an ADR.
 
 | Area | Choice | Version (verified) | License | Arrives in |
 |---|---|---|---|---|
@@ -30,8 +30,11 @@ What each tool *is* and *does* is explained in plain words on [Tools explained](
 | Secrets | External Secrets Operator / OpenBao | 2.x / 2.6 | Apache-2.0 / MPL-2.0 | M12 |
 | Supply chain / policy | Trivy, Syft, cosign / Kyverno | cosign 3 / 1.19 | Apache-2.0 | M12 |
 | Chaos | Chaos Mesh | 2.8 | Apache-2.0 | M13 |
-| CI / registry | GitHub Actions / GHCR | service | — | M0 / M1 |
-| Docs | Docusaurus | 3.10.2 | MIT | M0 |
+| Repo tooling | Node.js scripts (built-ins only) / pnpm workspaces | Node 24 LTS / 12.8.1 | MIT | M0 |
+| CI / registry / docs hosting | GitHub Actions / GHCR / GitHub Pages | service | — | M0 / M1 / M0 |
+| CI actions (pinned by commit SHA) | actions/checkout / actions/setup-node / pnpm/action-setup / dorny/paths-filter | 7.0.1 / 7.0.0 / 6.1.0 / 4.0.3 | MIT | M0 |
+| Pages actions (pinned by commit SHA) | actions/configure-pages / actions/upload-pages-artifact / actions/deploy-pages | 6.0.0 / 5.0.0 / 5.0.1 | MIT | M0 |
+| Docs | Docusaurus / markdownlint-cli2 / lychee (lychee-action) | 3.10.2 / 0.23.3 / action 2.9.0 | MIT / MIT / Apache-2.0 | M0 |
 
 ## Licensing notes
 

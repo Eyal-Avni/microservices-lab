@@ -79,9 +79,9 @@ To skip the check for a single commit, put `[skip-docs]` in its message.
 | `ci.yml` | `docs` | markdownlint, Docusaurus build |
 | `ci.yml` | `docs-drift` | On pull requests only: code changes need docs changes |
 | `ci.yml` | `tooling` | `node --test` for the scripts and the hooks |
-| `ci.yml` | `ci-ok` | Always runs; fails if any job failed. This is the only required check. |
-| `pages.yml` | build + deploy | Publishes the site to GitHub Pages on pushes to `main` |
-| `links.yml` | lychee | Weekly external link check (not required) |
+| `ci.yml` | `ci-ok` | Always runs; fails if any job failed or was cancelled. This is the only required check. |
+| `pages.yml` | build + deploy | Publishes the site to GitHub Pages when a push to `main` changes the docs or the site, or on demand |
+| `links.yml` | lychee | External link check: weekly, on demand, and on pull requests that change Markdown. Not required. |
 
 ## Commands
 
