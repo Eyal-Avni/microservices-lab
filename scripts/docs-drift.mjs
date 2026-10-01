@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // docs-drift: docs-freshness check for the git commit-msg hook (--staged) and CI (--range). Spec §12.6, layers 2-3.
-// Exit codes: 0 = fine or reminder only, 1 = code changed without docs (blocking), 2 = usage error.
+// Exit codes: 0 = fine or reminder only, 1 = code changed without docs (blocking),
+// 2 = usage error (including "not a git repository" and git rejecting the range).
 import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { evaluate, suggestDocs, SKIP_MARKER } from './lib/docs-rules.mjs';
-import { currentBranch, rangeFiles, stagedFiles, worktreeChanges } from './lib/git.mjs';
+import { currentBranch, isGitRepo, rangeFiles, stagedFiles, worktreeChanges } from './lib/git.mjs';
 
 const USAGE = `Usage:
   node scripts/docs-drift.mjs --staged [--commit-msg-file <file> | --message <text>] [--include-worktree]
@@ -30,6 +31,16 @@ export function decide({ files, branch = '', message = '', mode }) {
   return { exitCode: blocking ? 1 : 0, text: lines.join('\n') };
 }
 
+function check(values) {
+  if (values.range) return decide({ files: rangeFiles(values.range), mode: 'range' });
+  const message = values['commit-msg-file']
+    ? readFileSync(values['commit-msg-file'], 'utf8')
+    : (values.message ?? '');
+  const files = new Set(stagedFiles());
+  if (values['include-worktree']) for (const f of worktreeChanges()) files.add(f);
+  return decide({ files: [...files], branch: currentBranch(), message, mode: 'staged' });
+}
+
 export function main(argv) {
   let values;
   try {
@@ -52,23 +63,24 @@ export function main(argv) {
     console.log('docs-drift: skipped by request.');
     return 0;
   }
-  if (values.range) {
-    const result = decide({ files: rangeFiles(values.range), mode: 'range' });
-    if (result.text) console.error(result.text);
-    return result.exitCode;
+  if (!values.range && !values.staged) {
+    console.error(USAGE);
+    return 2;
   }
-  if (values.staged) {
-    const message = values['commit-msg-file']
-      ? readFileSync(values['commit-msg-file'], 'utf8')
-      : (values.message ?? '');
-    const files = new Set(stagedFiles());
-    if (values['include-worktree']) for (const f of worktreeChanges()) files.add(f);
-    const result = decide({ files: [...files], branch: currentBranch(), message, mode: 'staged' });
-    if (result.text) console.error(result.text);
-    return result.exitCode;
+  if (!isGitRepo()) {
+    console.error(`docs-drift: not a git repository (${process.cwd()}).`);
+    return 2;
   }
-  console.error(USAGE);
-  return 2;
+  let result;
+  try {
+    result = check(values);
+  } catch (err) {
+    if (typeof err?.stderr !== 'string') throw err; // not a git failure: a bug, so let it surface
+    console.error(`docs-drift: git failed: ${err.stderr.trim().split('\n')[0]}`);
+    return 2;
+  }
+  if (result.text) console.error(result.text);
+  return result.exitCode;
 }
 
 if (import.meta.main) process.exitCode = main(process.argv.slice(2));

@@ -8,6 +8,15 @@ export function git(args, cwd = process.cwd()) {
 
 const nulList = (out) => out.split('\0').filter(Boolean);
 
+export function isGitRepo(cwd = process.cwd()) {
+  try {
+    git(['rev-parse', '--git-dir'], cwd);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function currentBranch(cwd = process.cwd()) {
   try {
     return git(['symbolic-ref', '--quiet', '--short', 'HEAD'], cwd).trim();

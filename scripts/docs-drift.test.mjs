@@ -2,7 +2,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { decide } from './docs-drift.mjs';
 import { makeTempRepo } from './lib/testing.mjs';
@@ -84,4 +85,24 @@ test('cli without a mode prints usage and exits 2', (t) => {
   const r = cli(repo.dir);
   assert.equal(r.status, 2);
   assert.match(r.stderr, /Usage/);
+});
+
+test('cli outside a git repository exits 2 with a one-line message', (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'mslab-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  // GIT_CEILING_DIRECTORIES stops git from finding an unrelated repo above the temp folder.
+  const r = spawnSync(process.execPath, [CLI, '--staged'], {
+    cwd: dir, encoding: 'utf8', env: { ...process.env, GIT_CEILING_DIRECTORIES: tmpdir() },
+  });
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /^docs-drift: not a git repository/);
+  assert.equal(r.stderr.trim().split('\n').length, 1);
+});
+
+test('cli --range with an unknown ref exits 2 with git\'s reason on one line', (t) => {
+  const repo = makeTempRepo(t);
+  const r = cli(repo.dir, '--range', 'no-such-branch...HEAD');
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /^docs-drift: git failed: .*no-such-branch/);
+  assert.equal(r.stderr.trim().split('\n').length, 1);
 });
