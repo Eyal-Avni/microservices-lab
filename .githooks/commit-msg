@@ -1,0 +1,4 @@
+#!/bin/sh
+# Docs-freshness layer 2 (spec §12.6): runs for every local commit, including ones made outside Claude Code.
+# Blocks code-only commits on main; prints a reminder on other branches. Skip one commit with [skip-docs].
+exec node scripts/docs-drift.mjs --staged --commit-msg-file "$1"
